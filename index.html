@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Test</title>
+    <link rel="icon" href="1734128194421.jpg">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --font-battambang: "Battambang", system-ui;
+            --font-dangrek: "Dangrek", sans-serif;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fce4ec; /* ពណ៌ផ្កាឈូកស្រាល */
+            font-family: 'Khmer OS Siemreap', sans-serif;
+            margin: 0;
+            overflow: hidden; /* មិនឱ្យ Button រត់ចេញក្រៅអេក្រង់ */
+        }
+
+        h1 {
+            text-shadow: -5px 1px 8px #ff5a96;
+            color: #d81b60;
+            margin-bottom: 20px;
+            z-index: 10;
+            transition: all 3s ease;
+            
+        }
+        h1:hover {
+            cursor: pointer;
+            color: rgb(255, 255, 255);
+            text-shadow: 5px 1px 8px #ff5a96;
+            font-family: var(--font-dangrek);
+            transform: scale3d(5);
+            transition: all 3s ease;
+        }
+
+        .container {
+            position: relative;
+            text-align: center;
+            z-index: 10;
+        }
+
+        button {
+            padding: 10px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease; 
+            font-family: inherit;
+        }
+
+        /* រចនាប័ទ្ម Button Yes */
+        #yes-button {
+            background-color: #4CAF50;
+            color: white;
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        #yes-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 15px #f1759a;
+            filter: blur(3);
+        }
+        #yes-button:active {
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+
+        /* រចនាប័ទ្ម Button No */
+        #noBtn {
+            background-color: #f44336;
+            color: white;
+            box-shadow: 0 5px 15px rgba(244, 67, 54, 0.4);
+            position: relative; 
+        }
+
+        /* បន្ថែម Canvas សម្រាប់ Effect */
+        #fireCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="fireCanvas"></canvas>
+    <div class="container">
+        <h1 id="main-text">ស្រឡាញ់ខ្ញុំអត់? ❤️</h1>
+        <div class="button-group">
+            <button id="yes-button">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <!-- ភ្លេងកំដរ -->
+    <audio id="surprise-music" loop>
+        <source src="Yay.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yes-button');
+        const mainText = document.getElementById('main-text');
+        const audio = document.getElementById('surprise-music');
+
+        // មុខងារធ្វើឱ្យ Button No រត់គេច
+        noBtn.addEventListener('mouseover', () => {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.position = 'fixed'; 
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        });
+
+        // មុខងារនៅពេលចុចប៊ូតុង Yes (ជួសជុលកំហុស ReferenceError: btn)
+        yesBtn.addEventListener('click', () => {
+            // 1. ចាក់ភ្លេង
+            audio.play().catch(e => console.log("Audio blocked by browser policy"));
+
+            // 2. ការបាញ់ក្រដាស (Confetti Surprise)
+            var count = 200;
+            var defaults = { origin: { y: 0.7 } };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+
+            // 3. ប្តូរអត្ថបទ
+            yesBtn.innerText = "យេ! 🎉";
+            mainText.innerText = "ខ្ញុំក៏ស្រលាញ់អ្នកដែរ! 🥰";
+            
+            // លាក់ប៊ូតុង No
+            noBtn.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
